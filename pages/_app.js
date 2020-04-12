@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Head from 'next/head';
 import Pool from '../lib/webrtc/Pool';
 
@@ -28,6 +30,10 @@ const App = ({ Component }) => {
             </ColorModeProvider>
         </ThemeProvider>
     );
+};
+
+App.propTypes = {
+    Component: PropTypes.elementType,
 };
 
 export default App;

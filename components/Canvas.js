@@ -118,7 +118,7 @@ const Canvas = ({ canvasRef, addSnapShot, isFillMode, color, size, ...props }) =
         const context = canvas.getContext('2d');
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
         addSnapShot(imageData);
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     //Start drawing when the mouse is pressed.
     React.useEffect(() => {

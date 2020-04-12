@@ -4,18 +4,16 @@ module.exports = {
         node: true,
     },
     parser: 'babel-eslint',
-    plugins: ['prettier', 'flowtype', 'react'],
     extends: [
         'eslint:recommended',
         'plugin:prettier/recommended',
         'plugin:import/errors',
         'plugin:import/warnings',
         'plugin:react/recommended',
-        'plugin:flowtype/recommended',
         'plugin:react-hooks/recommended',
+        'plugin:jsx-a11y/recommended',
     ],
     rules: {
-        'prettier/prettier': 'error',
         'no-console': [
             'error',
             {
@@ -28,6 +26,7 @@ module.exports = {
                 ignoreRestSiblings: true,
             },
         ],
+        'prettier/prettier': 'error',
     },
     settings: {
         react: {
