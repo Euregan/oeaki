@@ -1,23 +1,12 @@
-import Head from 'next/head';
-import { useState } from 'react';
-import {
-    Heading,
-    Text,
-    ThemeProvider,
-    Flex,
-    FormErrorMessage,
-    FormControl,
-    FormLabel,
-    Button,
-    Input,
-} from '@chakra-ui/core';
-import { withTheme } from 'emotion-theming';
+import React from 'react';
+import { Heading, Text, Flex, FormErrorMessage, FormControl, FormLabel, Button, Input } from '@chakra-ui/core';
 
 const Home = () => {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = React.useState({
         username: '',
     });
-    const [formErrors, setFormErrors] = useState({});
+    const [formErrors, setFormErrors] = React.useState({});
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const { username } = formData;
@@ -28,48 +17,45 @@ const Home = () => {
             setFormErrors(errors);
         }
     };
-    const handleOnChangeFactory = (field) => (e) => setFormData({ ...formData, [field]: e.target.value });
-    return (
-        <ThemeProvider>
-            <Head>
-                <title>Oeaki</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
 
+    const handleOnChange = ({ target: { name, value } }) => {
+        setFormData({ ...formData, [name]: value });
+    };
+
+    return (
+        <Flex direction="column" justify="center" align="center">
+            <Heading color="gray.500" fontSize="6xl" textAlign="center">
+                Oeaki
+                <Text color="gray.500" fontSize="3xl">
+                    The drawing Game
+                </Text>
+            </Heading>
             <Flex direction="column" justify="center" align="center">
-                <Heading color="gray.500" fontSize="6xl" textAlign="center">
-                    Oeaki
-                    <Text color="gray.500" fontSize="3xl">
-                        The drawing Game
-                    </Text>
-                </Heading>
-                <Flex direction="column" justify="center" align="center">
-                    <Text color="gray.700" fontSize="3xl">
-                        Create a game
-                    </Text>
-                    <form onSubmit={handleSubmit}>
-                        <FormControl isInvalid={Object.keys(formErrors).length > 0}>
-                            <Flex direction="column" justify="center" align="center">
-                                <FormLabel htmlFor="username">Username</FormLabel>
-                                <Input
-                                    value={formData.username}
-                                    onChange={handleOnChangeFactory('username')}
-                                    type="text"
-                                    id="username"
-                                    aria-describedby="email-helper-text"
-                                    placeholder="JeanLeBgDu54"
-                                />
-                                <FormErrorMessage>{formErrors.username}</FormErrorMessage>
-                                <Button type="submit" variantColor="teal" size="lg" margin="auto">
-                                    Create
-                                </Button>
-                            </Flex>
-                        </FormControl>
-                    </form>
-                </Flex>
+                <Text color="gray.700" fontSize="3xl">
+                    Create a game
+                </Text>
+                <form onSubmit={handleSubmit}>
+                    <FormControl isInvalid={Object.keys(formErrors).length > 0}>
+                        <Flex direction="column" justify="center" align="center">
+                            <FormLabel htmlFor="username">Username</FormLabel>
+                            <Input
+                                value={formData.username}
+                                onChange={handleOnChange}
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Enter your username"
+                            />
+                            <FormErrorMessage>{formErrors.username}</FormErrorMessage>
+                            <Button type="submit" variantColor="teal" size="lg" margin="auto">
+                                Play!
+                            </Button>
+                        </Flex>
+                    </FormControl>
+                </form>
             </Flex>
-        </ThemeProvider>
+        </Flex>
     );
 };
 
-export default withTheme(Home);
+export default Home;
