@@ -16,7 +16,7 @@ const App = ({ Component }) => {
             window.pool = new Pool(process.env.WEBSOCKET_URL);
             setPool(pool);
         }
-    }, []);
+    }, [pool]);
 
     return (
         <ThemeProvider theme={theme}>
