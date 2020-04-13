@@ -1,42 +1,62 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Flex, Box, Checkbox, Button } from '@chakra-ui/core';
 
-const colors = ['#B80000', '#DB3E00', '#FCCB00', '#008B02', '#006B76', '#1273DE', '#004DCF', '#5300EB'];
-const buttonStyles = { width: '30px', height: '30px', border: 'none', backgroundColor: 'white' };
-
+const colorsFirstLine = ['#B80000', '#DB3E00', '#FCCB00', '#008B02', '#006B76', '#1273DE', '#004DCF', '#5300EB'];
+const colorsSecondLine = ['#EB9694', '#FAD0C3', '#FEF3BD', '#C1E1C5', '#BEDADC', '#C4DEF6', '#BED3F3', '#D4C4FB'];
 const ColorPicker = ({ onChange }) => {
-    const handleClick = (color) => () => onChange(color);
+    const handleClick = (event) => onChange(event.target.name);
 
-    return colors.map((color, key) => (
-        <button key={`color${key}`} style={{ ...buttonStyles, backgroundColor: color }} onClick={handleClick(color)} />
-    ));
+    return (
+        <Flex direction="column">
+            <Box>
+                {colorsFirstLine.map((color, key) => (
+                    <Button key={`color${key}`} backgroundColor={color} name={color} onClick={handleClick} />
+                ))}
+            </Box>
+            <Box>
+                {colorsSecondLine.map((color, key) => (
+                    <Button key={`color${key}`} backgroundColor={color} name={color} onClick={handleClick} />
+                ))}
+            </Box>
+        </Flex>
+    );
+};
+
+ColorPicker.propTypes = {
+    onChange: PropTypes.func,
 };
 
 const sizes = [2, 5, 10, 15];
-const circleStyles = { backgroundColor: 'black', borderRadius: '50%' };
-
 const SizePicker = ({ onChange }) => {
-    const handleClick = (size) => () => onChange(size);
+    const handleClick = (event) => onChange(parseInt(event.target.name));
 
     return sizes.map((size, key) => (
-        <button key={`color${key}`} style={buttonStyles} onClick={handleClick(size)}>
-            <div style={{ ...circleStyles, width: `${2 * size}px`, height: `${2 * size}px` }} />
-        </button>
+        <Button key={`color${key}`} name={size} onClick={handleClick}>
+            <Box backgroundColor="black" borderRadius="50%" width={`${2 * size}px`} height={`${2 * size}px`} />
+        </Button>
     ));
 };
 
-const containerStyles = { display: 'flex', flexDirection: 'row' };
+SizePicker.propTypes = {
+    onChange: PropTypes.func,
+};
 
 const Actions = ({ onClear, onFill, onChangeColor, onChangeSize }) => (
-    <div style={containerStyles}>
-        <button onClick={onClear}>Clear</button>
-        <div>
-            <input onClick={onFill} type="checkbox" onChange={(event) => onFill(event.target.checked)} />
-            <label htmlFor="scales">Fill</label>
-        </div>
-        <ColorPicker onChange={onChangeColor} />
-        <SizePicker onChange={onChangeSize} />
-    </div>
+    <Flex direction="row">
+        <Box paddingRight="10px">
+            <Button onClick={onClear}>Clear</Button>
+        </Box>
+        <Box paddingRight="10px">
+            <Checkbox onChange={(event) => onFill(event.target.checked)}>Fill</Checkbox>
+        </Box>
+        <Box paddingRight="10px">
+            <ColorPicker onChange={onChangeColor} />
+        </Box>
+        <Box paddingRight="10px">
+            <SizePicker onChange={onChangeSize} />
+        </Box>
+    </Flex>
 );
 
 Actions.propTypes = {
