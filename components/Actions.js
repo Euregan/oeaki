@@ -27,10 +27,9 @@ const SizePicker = ({ onChange }) => {
 
 const containerStyles = { display: 'flex', flexDirection: 'row' };
 
-const Actions = ({ onClear, onUndo, onFill, onChangeColor, onChangeSize }) => (
+const Actions = ({ onClear, onFill, onChangeColor, onChangeSize }) => (
     <div style={containerStyles}>
         <button onClick={onClear}>Clear</button>
-        <button onClick={onUndo}>undo</button>
         <div>
             <input onClick={onFill} type="checkbox" onChange={(event) => onFill(event.target.checked)} />
             <label htmlFor="scales">Fill</label>
@@ -42,7 +41,6 @@ const Actions = ({ onClear, onUndo, onFill, onChangeColor, onChangeSize }) => (
 
 Actions.propTypes = {
     onClear: PropTypes.func,
-    onUndo: PropTypes.func,
     onFill: PropTypes.func,
     onChangeColor: PropTypes.func,
     onChangeSize: PropTypes.func,

@@ -82,113 +82,122 @@ const floodFill = (imageData, newColor, x, y) => {
     }
 };
 
-const Canvas = ({ canvasRef, addSnapShot, isFillMode, color, size, ...props }) => {
+const useMouseMovePosition = (canvasRef) => {
+    const [pos, setPos] = React.useState(null);
+    React.useEffect(() => {
+        if (!canvasRef) {
+            return;
+        }
+        const canvas = canvasRef.current;
+        const handler = (event) => {
+            setPos({ x: event.pageX - canvas.offsetLeft, y: event.pageY - canvas.offsetTop });
+        };
+        canvas.addEventListener('mousemove', handler);
+        return () => {
+            canvas.removeEventListener('mousemove', handler);
+        };
+    }, [canvasRef]);
+    return pos;
+};
+
+const useMouseDownPosition = (canvasRef) => {
+    const [pos, setPos] = React.useState(null);
+    React.useEffect(() => {
+        if (!canvasRef.current) {
+            return;
+        }
+        const canvas = canvasRef.current;
+        const handler = (event) => {
+            setPos({ x: event.pageX - canvas.offsetLeft, y: event.pageY - canvas.offsetTop });
+        };
+        canvas.addEventListener('mousedown', handler);
+        return () => {
+            canvas.removeEventListener('mousedown', handler);
+        };
+    }, [canvasRef]);
+
+    return pos;
+};
+
+const useMouseUpLeave = (canvasRef, callBack) => {
+    React.useEffect(() => {
+        if (!canvasRef.current) {
+            return;
+        }
+        const canvas = canvasRef.current;
+        const handler = () => {
+            callBack();
+        };
+        canvas.addEventListener('mouseup', handler);
+        canvas.addEventListener('mouseleave', handler);
+        return () => {
+            canvas.removeEventListener('mouseup', handler);
+            canvas.removeEventListener('mouseleave', handler);
+        };
+    }, [callBack, canvasRef]);
+};
+
+const Canvas = ({ canvasRef, isFillMode, color, size, ...props }) => {
     const [isPainting, setIsPainting] = React.useState(false);
     const [mousePosition, setMousePosition] = React.useState(null);
 
-    const getCoordinates = (event) => {
-        const canvas = canvasRef.current;
-        return { x: event.pageX - canvas.offsetLeft, y: event.pageY - canvas.offsetTop };
-    };
+    const mouseDownPosition = useMouseDownPosition(canvasRef);
+    const mouseMovePosition = useMouseMovePosition(canvasRef);
+    // Stop drawing on mouse release
+    useMouseUpLeave(canvasRef, () => setIsPainting(false));
 
-    const drawLine = (originalMousePosition, newMousePosition) => {
-        const context = canvasRef.current.getContext('2d');
-        context.strokeStyle = color;
-        context.lineJoin = 'round';
-        context.lineWidth = size;
-
-        context.beginPath();
-        context.moveTo(originalMousePosition.x, originalMousePosition.y);
-        context.lineTo(newMousePosition.x, newMousePosition.y);
-        context.closePath();
-
-        context.stroke();
-    };
-
-    const fill = ({ x, y }) => {
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        floodFill(imageData, hexToRgba(color), x, y);
-        context.putImageData(imageData, 0, 0);
-    };
-
+    // Start drawing when the mouse is pressed.
     React.useEffect(() => {
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        addSnapShot(imageData);
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        if (!mouseDownPosition) {
+            return;
+        }
 
-    //Start drawing when the mouse is pressed.
-    React.useEffect(() => {
-        const startPaint = (event) => {
-            const coordinates = getCoordinates(event);
-            if (isFillMode) {
-                fill(coordinates);
-                return;
-            }
-
-            setMousePosition(coordinates);
-            setIsPainting(true);
-        };
-
-        const canvas = canvasRef.current;
-        canvas.addEventListener('mousedown', startPaint);
-        return () => {
-            canvas.removeEventListener('mousedown', startPaint);
-        };
-    });
-
-    //Draw the line on mouse move
-    React.useEffect(() => {
-        const paint = (event) => {
-            if (!isPainting) {
-                return;
-            }
-
-            const newMousePosition = getCoordinates(event);
-            drawLine(mousePosition, newMousePosition);
-            setMousePosition(newMousePosition);
-        };
-
-        const canvas = canvasRef.current;
-        canvas.addEventListener('mousemove', paint);
-        return () => {
-            canvas.removeEventListener('mousemove', paint);
-        };
-    });
-
-    //Stop drawing on mouse release
-    React.useEffect(() => {
-        const mouseup = () => {
-            setIsPainting(false);
-
+        if (isFillMode) {
             const canvas = canvasRef.current;
             const context = canvas.getContext('2d');
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            addSnapShot(imageData);
+            floodFill(imageData, hexToRgba(color), mouseDownPosition.x, mouseDownPosition.y);
+            context.putImageData(imageData, 0, 0);
+            return;
+        }
+
+        setMousePosition(mouseDownPosition);
+        setIsPainting(true);
+    }, [canvasRef, mouseDownPosition]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Draw the line on mouse move
+    React.useEffect(() => {
+        if (!isPainting) {
+            return;
+        }
+
+        if (!mouseMovePosition) {
+            return;
+        }
+
+        const drawLine = () => {
+            const context = canvasRef.current.getContext('2d');
+            context.strokeStyle = color;
+            context.lineJoin = 'round';
+            context.lineWidth = size;
+
+            context.beginPath();
+            context.moveTo(mousePosition.x, mousePosition.y);
+            context.lineTo(mouseMovePosition.x, mouseMovePosition.y);
+            context.closePath();
+
+            context.stroke();
         };
 
-        const mouseleave = () => {
-            setIsPainting(false);
-        };
-
-        const canvas = canvasRef.current;
-        canvas.addEventListener('mouseup', mouseup);
-        canvas.addEventListener('mouseleave', mouseleave);
-        return () => {
-            canvas.removeEventListener('mouseup', mouseup);
-            canvas.removeEventListener('mouseleave', mouseleave);
-        };
-    });
+        drawLine();
+        setMousePosition(mouseMovePosition);
+    }, [canvasRef, mouseMovePosition]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return <canvas {...props} ref={canvasRef} />;
 };
 
 Canvas.propTypes = {
     canvasRef: PropTypes.shape({ current: PropTypes.any }),
-    addSnapShot: PropTypes.func,
     isFillMode: PropTypes.bool,
     color: PropTypes.string,
     size: PropTypes.number,
