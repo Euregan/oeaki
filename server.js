@@ -17,6 +17,11 @@ app.prepare().then(() => {
     parse(request.url, true)
   ))
 
+  server.listen(port, (err) => {
+    if (err) throw err
+    console.log(`> Ready on http://localhost:${port}`)
+  })
+
   const wsServer = new WebSocket.Server({server}).on('connection', ws => {
     ws.on('message', message => {
       wsServer.clients.forEach(client => {
@@ -25,10 +30,5 @@ app.prepare().then(() => {
         }
       })
     })
-  })
-
-  server.listen(port, (err) => {
-    if (err) throw err
-    console.log(`> Ready on http://localhost:${port}`)
   })
 })
