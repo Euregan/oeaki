@@ -13,7 +13,7 @@ const App = ({ Component }) => {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            window.pool = new Pool(`ws://${window.location.host}`)
+            window.pool = new Pool(`${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}`)
             setPool(pool);
         }
     }, []);
