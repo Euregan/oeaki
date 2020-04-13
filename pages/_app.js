@@ -4,7 +4,7 @@ import Pool from '../lib/webrtc/Pool';
 
 import { ThemeProvider, CSSReset, ColorModeProvider } from '@chakra-ui/core';
 
-import theme from '../lib/theme';
+import theme from '../components/theme';
 
 const App = ({ Component }) => {
     const [pool, setPool] = React.useState(null);
