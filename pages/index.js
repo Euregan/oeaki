@@ -1,11 +1,11 @@
-import React from 'react';
+import {useState, useEffect} from 'react';
 import { Heading, Text, Flex, FormErrorMessage, FormControl, FormLabel, Button, Input } from '@chakra-ui/core';
 
-const Home = () => {
-    const [formData, setFormData] = React.useState({
+const Home = ({webrtc}) => {
+    const [formData, setFormData] = useState({
         username: '',
     });
-    const [formErrors, setFormErrors] = React.useState({});
+    const [formErrors, setFormErrors] = useState({});
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -21,7 +21,7 @@ const Home = () => {
     const handleOnChange = ({ target: { name, value } }) => {
         setFormData({ ...formData, [name]: value });
     };
-
+    
     return (
         <Flex direction="column" justify="center" align="center">
             <Heading color="gray.500" fontSize="6xl" textAlign="center">
