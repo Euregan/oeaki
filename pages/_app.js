@@ -1,19 +1,17 @@
 import React from 'react';
 import Head from 'next/head';
-import { useState, useEffect } from 'react'
-import Pool from '../lib/webrtc/Pool'
+import Pool from '../lib/webrtc/Pool';
 
 import { ThemeProvider, CSSReset, ColorModeProvider } from '@chakra-ui/core';
 
 import theme from '../lib/theme';
 
-
 const App = ({ Component }) => {
-    const [pool, setPool] = useState(null);
+    const [pool, setPool] = React.useState(null);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (typeof window !== 'undefined') {
-            window.pool = new Pool(`${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}`)
+            window.pool = new Pool(`${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}`);
             setPool(pool);
         }
     }, []);
@@ -26,11 +24,10 @@ const App = ({ Component }) => {
                     <title>Oeaki</title>
                     <link rel="shortcut icon" href="/favicon.ico" />
                 </Head>
-            <Component webrtc={pool}/>
+                <Component webrtc={pool} />
             </ColorModeProvider>
         </ThemeProvider>
     );
-}
-
+};
 
 export default App;
