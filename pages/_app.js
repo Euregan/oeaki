@@ -11,7 +11,7 @@ const App = ({ Component }) => {
 
     React.useEffect(() => {
         if (typeof window !== 'undefined') {
-            window.pool = new Pool(`${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}`);
+            window.pool = new Pool(process.env.WEBSOCKET_URL);
             setPool(pool);
         }
     }, []);
