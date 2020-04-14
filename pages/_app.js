@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Head from 'next/head';
 import Pool from '../lib/webrtc/Pool';
 
@@ -14,7 +16,7 @@ const App = ({ Component }) => {
             window.pool = new Pool(process.env.WEBSOCKET_URL);
             setPool(pool);
         }
-    }, []);
+    }, [pool]);
 
     return (
         <ThemeProvider theme={theme}>
@@ -28,6 +30,10 @@ const App = ({ Component }) => {
             </ColorModeProvider>
         </ThemeProvider>
     );
+};
+
+App.propTypes = {
+    Component: PropTypes.elementType,
 };
 
 export default App;

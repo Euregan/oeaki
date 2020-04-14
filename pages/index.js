@@ -1,7 +1,9 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { Heading, Text, Flex, FormErrorMessage, FormControl, FormLabel, Button, Input } from '@chakra-ui/core';
 
 const Home = () => {
+    const router = useRouter();
     const [formData, setFormData] = React.useState({
         username: '',
     });
@@ -12,10 +14,12 @@ const Home = () => {
         const { username } = formData;
         if (!username) {
             setFormErrors({ username: 'You have to enter an username to play' });
-        } else {
-            const { username: usernameError, ...errors } = formErrors;
-            setFormErrors(errors);
+            return;
         }
+
+        router.push({
+            pathname: '/draw',
+        });
     };
 
     const handleOnChange = ({ target: { name, value } }) => {
