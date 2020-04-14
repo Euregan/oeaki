@@ -3,9 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "node server.js",
+        "dev": "concurrently \"next dev\" \"nodemon --watch signaling.js signaling.js\"",
         "build": "next build",
-        "start": "NODE_ENV=production node server.js",
+        "start": "next start",
         "lint": "eslint .",
         "format": "prettier --write --check \"**/*.+(js|json|md)\""
     },
@@ -22,6 +22,7 @@
         "@emotion/core": "^10.0.28",
         "@emotion/styled": "^10.0.27",
         "babel-eslint": "^10.1.0",
+        "concurrently": "^5.1.0",
         "emotion-theming": "^10.0.27",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.10.1",
