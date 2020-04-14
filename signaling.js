@@ -5,10 +5,10 @@ const PORT = process.env.PORT || 3000;
 
 const server = http.createServer();
 
-server.listen(port, (err) => {
+server.listen(PORT, (err) => {
     if (err) throw err;
     // eslint-disable-next-line no-console
-    console.log(`> Ready on http://localhost:${port}`);
+    console.log(`> Ready on http://localhost:${PORT}`);
 });
 
 const wsServer = new WebSocket.Server({ server }).on('connection', (ws) => {
