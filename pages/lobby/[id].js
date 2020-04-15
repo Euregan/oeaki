@@ -52,7 +52,7 @@ const useShareLink = () => {
 const Lobby = () => {
     const [message, setMessage] = React.useState('');
     const [messages, setMessages] = React.useState([]);
-    const newMessage = (message) => setMessages([...messages, message]);
+    const newMessage = (message) => setMessages([message, ...messages]);
     const addQueuedMessage = useQueuedMessage(newMessage);
     const {
         query: { id },
@@ -97,7 +97,7 @@ const Lobby = () => {
                             <Box
                                 key={index}
                                 width="80%"
-                                padding="5px"
+                                padding="5px 10px"
                                 margin="5px"
                                 rounded="lg"
                                 backgroundColor="tomato"
