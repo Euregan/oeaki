@@ -39,7 +39,7 @@ new WebSocket.Server({ server }).on('connection', (ws) => {
     ws.on('close', () => {
         const { lobbyId } = ws;
         if (lobbyId) {
-            rooms[lobbyId] = (rooms.lobbyId || []).filter(({ id }) => id !== ws.id);
+            rooms[lobbyId] = (rooms[lobbyId] || []).filter(({ id }) => id !== ws.id);
         }
     });
 });
