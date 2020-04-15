@@ -1,5 +1,6 @@
 const http = require('http');
 const WebSocket = require('ws');
+const uuid = require('uuid');
 
 const PORT = process.env.PORT || 3001;
 
@@ -11,12 +12,34 @@ server.listen(PORT, (err) => {
     console.log(`> Ready on http://localhost:${PORT}`);
 });
 
-const wsServer = new WebSocket.Server({ server }).on('connection', (ws) => {
+const rooms = {};
+
+new WebSocket.Server({ server }).on('connection', (ws) => {
+    ws.on('connection', (ws) => {
+        ws.id = uuid.v4();
+    });
     ws.on('message', (message) => {
-        wsServer.clients.forEach((client) => {
-            if (client !== ws) {
-                client.send(message);
+        const { type, id: lobbyId } = JSON.parse(message);
+        if (type === 'lobby-subscription') {
+            rooms[lobbyId] = [...(rooms[lobbyId] || []), ws];
+            ws.lobbyId = lobbyId;
+            ws.send(JSON.stringify({ type: 'lobby-subscription-reply' }));
+        } else {
+            const room = rooms[ws.lobbyId];
+            if (!room) {
+                return;
             }
-        });
+            room.forEach((client) => {
+                if (client !== ws) {
+                    client.send(message);
+                }
+            });
+        }
+    });
+    ws.on('close', () => {
+        const { lobbyId } = ws;
+        if (lobbyId) {
+            rooms[lobbyId] = (rooms.lobbyId || []).filter(({ id }) => id !== ws.id);
+        }
     });
 });

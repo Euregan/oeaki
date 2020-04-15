@@ -1,4 +1,5 @@
 import React from 'react';
+import { v4 as uuid } from 'uuid';
 import { useRouter } from 'next/router';
 import { Heading, Text, Flex, FormErrorMessage, FormControl, FormLabel, Button, Input } from '@chakra-ui/core';
 
@@ -17,8 +18,10 @@ const Home = () => {
             return;
         }
 
+        const lobbyId = uuid();
+
         router.push({
-            pathname: '/draw',
+            pathname: `/lobby/${lobbyId}`,
         });
     };
 
