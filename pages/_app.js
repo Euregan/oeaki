@@ -13,7 +13,7 @@ const App = ({ Component }) => {
 
     React.useEffect(() => {
         if (typeof window !== 'undefined') {
-            window.pool = new Pool(process.env.WEBSOCKET_URL);
+            window.pool = new Pool(process.env.WEBSOCKET_URL, ['chat', 'drawing', 'game']);
             setPool(pool);
         }
     }, [pool]);
