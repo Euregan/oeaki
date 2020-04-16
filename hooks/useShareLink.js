@@ -10,9 +10,15 @@ export default () => {
         }
     }, [shareClicked]);
     const onShareLink = () => {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            setSharedClicked(true);
-        });
+        navigator.clipboard
+            .writeText(window.location.href)
+            .then(() => {
+                setSharedClicked(true);
+            })
+            .catch((err) => {
+                // This can happen if the user denies clipboard permissions:
+                console.error('Could not copy text: ', err);
+            });
     };
 
     return [shareClicked, onShareLink];
