@@ -17,7 +17,7 @@ const Home = () => {
             setFormErrors({ username: 'You have to enter an username to play' });
             return;
         }
-
+        localStorage.setItem('username', username);
         const lobbyId = uuid();
 
         router.push({
