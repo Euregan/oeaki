@@ -1,17 +1,17 @@
 import React from 'react';
-import { Box, Text, Input, Button, Flex, Divider, Heading, Badge } from '@chakra-ui/core';
+import { Box, Text, Input, Button, Flex, Divider, Heading } from '@chakra-ui/core';
 import { useRouter } from 'next/router';
 import Pool from '../../lib/webrtc/Pool';
 
-const useWebRtcConnexion = (lobbyId, listeners = []) => {
+const useWebRtcConnexion = (lobbyId, listeners = {}) => {
     const [pool, setPool] = React.useState(null);
 
     React.useEffect(() => {
         if (typeof window !== 'undefined' && lobbyId) {
-            const pool = new Pool(process.env.WEBSOCKET_URL, lobbyId);
+            const pool = new Pool(process.env.WEBSOCKET_URL, ['chat', 'drawing', 'game']);
             window.pool = pool;
             setPool(pool);
-            listeners.forEach((listener) => pool.listen(listener));
+            listeners.forEach(({ channel, listener }) => pool.listen(channel, listener));
         }
         // Should return a connexion clean up
     }, [lobbyId]);
@@ -57,11 +57,11 @@ const Lobby = () => {
     const {
         query: { id },
     } = useRouter();
-    const pool = useWebRtcConnexion(id, [addQueuedMessage]);
+    const pool = useWebRtcConnexion(id, [{ channel: 'chat', listener: addQueuedMessage }]);
     const [shareClicked, onShareLink] = useShareLink();
 
     const sendMessage = (message) => {
-        pool.send(message);
+        pool.send('chat', message);
         newMessage(message);
         setMessage('');
     };

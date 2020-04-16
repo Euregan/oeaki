@@ -1,6 +1,6 @@
 const http = require('http');
 const WebSocket = require('ws');
-const uuid = require('uuid');
+const { v4 } = require('uuid');
 
 const PORT = process.env.PORT || 3001;
 
@@ -12,33 +12,40 @@ server.listen(PORT, (err) => {
     console.log(`> Ready on http://localhost:${PORT}`);
 });
 
-const rooms = {};
+let rooms = {};
 
-new WebSocket.Server({ server }).on('connection', (ws) => {
-    ws.on('connection', () => {});
-    ws.on('message', (message) => {
-        const { type, id: lobbyId } = JSON.parse(message);
-        if (type === 'lobby-subscription') {
-            rooms[lobbyId] = [...(rooms[lobbyId] || []), ws];
-            ws.lobbyId = lobbyId;
-            ws.id = uuid.v4();
-            ws.send(JSON.stringify({ type: 'lobby-subscription-reply' }));
-        } else {
-            const room = rooms[ws.lobbyId];
-            if (!room) {
-                return;
+new WebSocket.Server({ server }).on('connection', (ws, request) => {
+    const id = v4();
+    const room = request.url;
+
+    // Adding the client to the room
+    if (!rooms[room]) {
+        rooms[room] = {};
+    }
+    rooms[room][id] = ws;
+
+    // Transmitting the messages
+    ws.on('message', (raw) => {
+        // Parsing the message and adding the sender
+        const message = {
+            ...JSON.parse(raw),
+            sender: id,
+        };
+        // For each client in the room
+        Object.keys(rooms[room]).forEach((peerId) => {
+            // If there is no particular recipient, or if the recipient is the current client
+            if (peerId !== id && (!message.recipient || message.recipient === peerId)) {
+                // Forward the message
+                rooms[room][peerId].send(JSON.stringify(message));
             }
-            room.forEach((client) => {
-                if (client !== ws) {
-                    client.send(message);
-                }
-            });
-        }
+        });
     });
+
+    // Cleaning up after a client has left
     ws.on('close', () => {
-        const { lobbyId, id } = ws;
-        if (ws.lobbyId) {
-            rooms[lobbyId] = (rooms[lobbyId] || []).filter((client) => client.id !== id);
+        delete rooms[room][id];
+        if (Object.keys(rooms[room]).length === 0) {
+            delete rooms[room];
         }
     });
 });
