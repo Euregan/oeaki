@@ -14,7 +14,7 @@ server.listen(PORT, (err) => {
 
 let rooms = {};
 
-const wsServer = new WebSocket.Server({ server }).on('connection', (ws, request) => {
+new WebSocket.Server({ server }).on('connection', (ws, request) => {
     const id = v4();
     const room = request.url;
 
