@@ -1,7 +1,8 @@
 import React from 'react';
-import { Flex } from '@chakra-ui/core';
+import { Columns, Rows } from '../../components/UI';
 import Lobby from '../../components/Lobby';
 import Chat from '../../components/Chat';
+import Board from '../../components/Board';
 import useQueuedMessage from '../../hooks/useQueuedMessage';
 import useWebRTC from '../../hooks/useWebRTC';
 
@@ -17,10 +18,26 @@ const Game = () => {
     };
 
     return (
-        <Flex direction="row" justify="space-between" padding={10} height={500} width="80%" margin="auto">
-            <Lobby players={players} width="49%" />
-            <Chat onSubmit={sendMessage} messages={messages} players={players} width="49%" />
-        </Flex>
+        <Columns className="game">
+            <Board />
+            <Rows className="players">
+                <Lobby players={players} />
+                <Chat onSubmit={sendMessage} messages={messages} players={players} />
+            </Rows>
+            <style jsx global>{`
+                .game {
+                    height: 100vh;
+                    width: 100vw;
+                    padding: 1rem;
+                    box-sizing: border-box;
+                }
+
+                .chat,
+                .board {
+                    flex-grow: 1;
+                }
+            `}</style>
+        </Columns>
     );
 };
 

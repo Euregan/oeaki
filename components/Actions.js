@@ -1,25 +1,65 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Flex, Box, Checkbox, Button } from '@chakra-ui/core';
+import { Checkbox } from '@chakra-ui/core';
+import { Card, Columns, Button } from './UI';
 
-const colorsFirstLine = ['#B80000', '#DB3E00', '#FCCB00', '#008B02', '#006B76', '#1273DE', '#004DCF', '#5300EB'];
-const colorsSecondLine = ['#EB9694', '#FAD0C3', '#FEF3BD', '#C1E1C5', '#BEDADC', '#C4DEF6', '#BED3F3', '#D4C4FB'];
+const colors = [
+    '#000000',
+    '#B80000',
+    '#DB3E00',
+    '#FCCB00',
+    '#008B02',
+    '#006B76',
+    '#1273DE',
+    '#004DCF',
+    '#5300EB',
+    '#9D9D9D',
+    '#EB9694',
+    '#FAD0C3',
+    '#FEF3BD',
+    '#C1E1C5',
+    '#BEDADC',
+    '#C4DEF6',
+    '#BED3F3',
+    '#D4C4FB',
+];
 const ColorPicker = ({ onChange }) => {
     const handleClick = (event) => onChange(event.target.name);
 
     return (
-        <Flex direction="column">
-            <Box>
-                {colorsFirstLine.map((color, key) => (
-                    <Button key={`color${key}`} backgroundColor={color} name={color} onClick={handleClick} />
-                ))}
-            </Box>
-            <Box>
-                {colorsSecondLine.map((color, key) => (
-                    <Button key={`color${key}`} backgroundColor={color} name={color} onClick={handleClick} />
-                ))}
-            </Box>
-        </Flex>
+        <div className="color-picker">
+            {colors.map((color, key) => (
+                <button key={`color-${key}`} style={{ backgroundColor: color }} name={color} onClick={handleClick} />
+            ))}
+            <style jsx>{`
+                .color-picker {
+                    display: grid;
+                    grid-template-columns: repeat(9, 1fr);
+                    grid-auto-rows: 1fr;
+                    grid-gap: 0.25rem;
+                }
+
+                .color-picker::before {
+                    content: '';
+                    width: 0;
+                    padding-bottom: 100%;
+                    grid-row: 1 / 1;
+                    grid-column: 1 / 1;
+                }
+
+                .color-picker > *:first-child {
+                    grid-row: 1 / 1;
+                    grid-column: 1 / 1;
+                }
+
+                button {
+                    cursor: pointer;
+                    border: none;
+                    width: 3rem;
+                    border-radius: var(--active-border-radius);
+                }
+            `}</style>
+        </div>
     );
 };
 
@@ -27,14 +67,26 @@ ColorPicker.propTypes = {
     onChange: PropTypes.func,
 };
 
-const sizes = [2, 5, 10, 15];
+const sizes = [1, 2, 3, 4];
 const SizePicker = ({ onChange }) => {
     const handleClick = (event) => onChange(parseInt(event.target.name));
 
     return sizes.map((size, key) => (
-        <Button key={`color${key}`} name={size} onClick={handleClick}>
-            <Box backgroundColor="black" borderRadius="50%" width={`${2 * size}px`} height={`${2 * size}px`} />
-        </Button>
+        <button
+            key={`size-${key}`}
+            name={size}
+            style={{ width: size * 1.125 + 'rem', height: size * 1.125 + 'rem' }}
+            onClick={handleClick}
+        >
+            <style jsx>{`
+                button {
+                    cursor: pointer;
+                    border: none;
+                    background-color: black;
+                    border-radius: 50%;
+                }
+            `}</style>
+        </button>
     ));
 };
 
@@ -43,20 +95,21 @@ SizePicker.propTypes = {
 };
 
 const Actions = ({ onClear, onFill, onChangeColor, onChangeSize }) => (
-    <Flex direction="row">
-        <Box paddingRight="10px">
+    <Card className="actions">
+        <Columns>
             <Button onClick={onClear}>Clear</Button>
-        </Box>
-        <Box paddingRight="10px">
-            <Checkbox onChange={(event) => onFill(event.target.checked)}>Fill</Checkbox>
-        </Box>
-        <Box paddingRight="10px">
+            <Checkbox onChange={(event) => onFill(event.target.checked)} borderColor="var(--border-color)">
+                Fill
+            </Checkbox>
             <ColorPicker onChange={onChangeColor} />
-        </Box>
-        <Box paddingRight="10px">
             <SizePicker onChange={onChangeSize} />
-        </Box>
-    </Flex>
+        </Columns>
+        <style jsx global>{`
+            .actions > .columns > * {
+                align-self: start;
+            }
+        `}</style>
+    </Card>
 );
 
 Actions.propTypes = {

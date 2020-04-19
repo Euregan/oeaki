@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
+import { Card } from './UI';
 
 const getColorAtPixel = ({ width, data }, x, y) => ({
     r: data[4 * (width * y + x) + 0],
@@ -138,10 +139,6 @@ const useMouseUpLeave = (canvasRef, callBack) => {
     }, [callBack, canvasRef]);
 };
 
-const CanvasComponent = styled.canvas`
-    border: 2px solid #000;
-`;
-
 const Canvas = ({ canvasRef, isFillMode, color, size }) => {
     const [isPainting, setIsPainting] = React.useState(false);
     const [mousePosition, setMousePosition] = React.useState(null);
@@ -198,7 +195,17 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
         setMousePosition(mouseMovePosition);
     }, [canvasRef, mouseMovePosition]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <CanvasComponent width={800} height={600} ref={canvasRef} />;
+    return (
+        <Card className="canvas">
+            <canvas ref={canvasRef} />
+            <style jsx>{`
+                canvas {
+                    width: 100%;
+                    height: 100%;
+                }
+            `}</style>
+        </Card>
+    );
 };
 
 Canvas.propTypes = {
