@@ -1,8 +1,27 @@
 import React from 'react';
-import { Box, Text, Button, Flex, Heading, Avatar, List, ListItem } from '@chakra-ui/core';
 import PropTypes from 'prop-types';
+import { Box, Text, Button, Flex, Heading, Avatar, List, ListItem } from '@chakra-ui/core';
+import useShareLink from '../lib/useShareLink';
 
-const Lobby = ({ players, shareClicked, onShareLink, ...props }) => (
+const ShareButton = () => {
+    const [shareClicked, onShareLink] = useShareLink();
+
+    if (shareClicked) {
+        return (
+            <Button variantColor="green" width="150px">
+                Copied
+            </Button>
+        );
+    }
+
+    return (
+        <Button variantColor="teal" width="150px" onClick={onShareLink}>
+            Invite Friends
+        </Button>
+    );
+};
+
+const Lobby = ({ players, ...props }) => (
     <Box borderWidth="2px" rounded="lg" {...props}>
         <Flex direction="column" align="center" justify="space-between" height="100%">
             <Heading color="gray.500" fontSize="4xl">
@@ -20,23 +39,13 @@ const Lobby = ({ players, shareClicked, onShareLink, ...props }) => (
                     </ListItem>
                 ))}
             </List>
-            {shareClicked ? (
-                <Button variantColor={'green'} width="150px">
-                    Copied
-                </Button>
-            ) : (
-                <Button variantColor="teal" width="150px" onClick={onShareLink}>
-                    Invite Friends
-                </Button>
-            )}
+            <ShareButton />
         </Flex>
     </Box>
 );
 
 Lobby.propTypes = {
     players: PropTypes.object.isRequired,
-    shareClicked: PropTypes.bool.isRequired,
-    onShareLink: PropTypes.func.isRequired,
 };
 
 export default Lobby;
