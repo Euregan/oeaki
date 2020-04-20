@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Text, Button, Flex, Avatar, Divider, Input } from '@chakra-ui/core';
+import { Text, Box, Flex, Avatar, Divider } from '@chakra-ui/core';
+import { Card, Rows, Columns, Button, Input } from './UI';
 
-const Chat = ({ onSubmit, messages, players, ...props }) => {
+const Chat = ({ onSubmit, messages, players }) => {
     const [message, setMessage] = React.useState('');
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -10,18 +11,11 @@ const Chat = ({ onSubmit, messages, players, ...props }) => {
         setMessage('');
     };
     return (
-        <Box borderWidth="2px" rounded="lg" {...props}>
-            <Flex direction="column" height="100%">
-                <Flex height="80%" overflow="auto" direction="column-reverse">
+        <Card className="chat">
+            <Rows>
+                <Flex direction="column-reverse" width="100%" className="messages">
                     {messages.map(({ emiterId, message }, index) => (
-                        <Box
-                            key={index}
-                            width="80%"
-                            padding="5px 10px"
-                            margin="5px"
-                            rounded="lg"
-                            backgroundColor="tomato"
-                        >
+                        <Box key={index} rounded="lg" backgroundColor="tomato">
                             <Flex align="center">
                                 <Avatar name={players[emiterId]}></Avatar>
                                 <Text marginLeft="2" color="white">
@@ -31,22 +25,28 @@ const Chat = ({ onSubmit, messages, players, ...props }) => {
                         </Box>
                     ))}
                 </Flex>
-                <Divider borderColor="tomato" />
-                <form onSubmit={handleSubmit} style={{ padding: 5, height: '20%', textAlign: 'center' }}>
-                    <Input
-                        height="50%"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        type="text"
-                        placeholder="Your message"
-                        marginBottom={1}
-                    />
-                    <Button type="submit" height="50%" variantColor="teal" size="lg" margin="auto">
-                        Send
-                    </Button>
+                <form onSubmit={handleSubmit}>
+                    <Columns>
+                        <Input
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            type="text"
+                            placeholder="Your message"
+                        />
+                        <Button type="submit">Send</Button>
+                    </Columns>
                 </form>
-            </Flex>
-        </Box>
+            </Rows>
+            <style jsx global>{`
+                .chat > .rows {
+                    height: 100%;
+                }
+
+                .chat .messages {
+                    flex-grow: 1;
+                }
+            `}</style>
+        </Card>
     );
 };
 

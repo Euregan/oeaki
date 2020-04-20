@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Box } from '@chakra-ui/core';
+import { Rows } from './UI';
 
 import Canvas from './Canvas';
 import Actions from './Actions';
@@ -20,17 +20,22 @@ const Board = () => {
     const handleChangeSize = (size) => setSize(size);
 
     return (
-        <Flex direction="column" align="center">
+        <Rows className="board">
             <Canvas canvasRef={canvasRef} isFillMode={isFillMode} color={color} size={size} />
-            <Box marginTop="10px">
-                <Actions
-                    onClear={handleClear}
-                    onFill={handleFill}
-                    onChangeColor={handleChangeColor}
-                    onChangeSize={handleChangeSize}
-                />
-            </Box>
-        </Flex>
+            <Actions
+                onClear={handleClear}
+                onFill={handleFill}
+                onChangeColor={handleChangeColor}
+                onChangeSize={handleChangeSize}
+            />
+            <style jsx global>{`
+                .board > .canvas {
+                    box-sizing: border-box;
+                    width: 100%;
+                    height: 100%;
+                }
+            `}</style>
+        </Rows>
     );
 };
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
+import useWindowSize from '../hooks/useWindowSize';
+import { Card } from './UI';
 
 const getColorAtPixel = ({ width, data }, x, y) => ({
     r: data[4 * (width * y + x) + 0],
@@ -138,13 +140,11 @@ const useMouseUpLeave = (canvasRef, callBack) => {
     }, [callBack, canvasRef]);
 };
 
-const CanvasComponent = styled.canvas`
-    border: 2px solid #000;
-`;
-
 const Canvas = ({ canvasRef, isFillMode, color, size }) => {
     const [isPainting, setIsPainting] = React.useState(false);
     const [mousePosition, setMousePosition] = React.useState(null);
+
+    const { width, height } = useWindowSize();
 
     const mouseDownPosition = useMouseDownPosition(canvasRef);
     const mouseMovePosition = useMouseMovePosition(canvasRef);
@@ -170,6 +170,25 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
         setIsPainting(true);
     }, [canvasRef, mouseDownPosition]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    React.useEffect(() => {
+        // grab the new width & heights for easier access
+        const newWidth = canvasRef.current.clientWidth;
+        const newHeight = canvasRef.current.clientHeight;
+        // create a back canvas
+        const backupCanvas = document.createElement('canvas');
+        const backupContext = backupCanvas.getContext('2d');
+        // set the backup to the new dimensions, and copy the old one
+        backupCanvas.width = newWidth;
+        backupCanvas.height = newHeight;
+        backupContext.fillStyle = 'white';
+        backupContext.fillRect(0, 0, newWidth, newHeight);
+        backupContext.drawImage(canvasRef.current, 0, 0);
+        // resize the actual canvas, and copy the image from the backup
+        canvasRef.current.width = newWidth;
+        canvasRef.current.height = newHeight;
+        canvasRef.current.getContext('2d').drawImage(backupCanvas, 0, 0);
+    }, [width, height]);
+
     // Draw the line on mouse move
     React.useEffect(() => {
         if (!isPainting) {
@@ -184,7 +203,7 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
             const context = canvasRef.current.getContext('2d');
             context.strokeStyle = color;
             context.lineJoin = 'round';
-            context.lineWidth = size;
+            context.lineWidth = size * 10;
 
             context.beginPath();
             context.moveTo(mousePosition.x, mousePosition.y);
@@ -198,7 +217,17 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
         setMousePosition(mouseMovePosition);
     }, [canvasRef, mouseMovePosition]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <CanvasComponent width={800} height={600} ref={canvasRef} />;
+    return (
+        <Card className="canvas">
+            <canvas ref={canvasRef} />
+            <style jsx>{`
+                canvas {
+                    width: 100%;
+                    height: 100%;
+                }
+            `}</style>
+        </Card>
+    );
 };
 
 Canvas.propTypes = {

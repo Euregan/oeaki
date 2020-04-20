@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 
 import Head from 'next/head';
 
-import { ThemeProvider, CSSReset, ColorModeProvider } from '@chakra-ui/core';
+import { ThemeProvider, ColorModeProvider } from '@chakra-ui/core';
 
 import theme from '../components/theme';
+
+import './app.css';
 
 const App = ({ Component }) => {
     return (
         <ThemeProvider theme={theme}>
-            <CSSReset />
             <ColorModeProvider>
                 <Head>
                     <title>Oeaki</title>

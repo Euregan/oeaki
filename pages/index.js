@@ -1,7 +1,8 @@
 import React from 'react';
 import { v4 as uuid } from 'uuid';
 import { useRouter } from 'next/router';
-import { Heading, Text, Flex, FormErrorMessage, FormControl, FormLabel, Button, Input } from '@chakra-ui/core';
+import { FormErrorMessage, FormControl, FormLabel } from '@chakra-ui/core';
+import { Rows, Columns, Card, Input, Button } from '../components/UI';
 
 const Home = () => {
     const router = useRouter();
@@ -30,38 +31,32 @@ const Home = () => {
     };
 
     return (
-        <Flex direction="column" justify="center" align="center">
-            <Heading color="gray.500" fontSize="6xl" textAlign="center">
-                Oeaki
-                <Text color="gray.500" fontSize="3xl">
-                    The drawing Game
-                </Text>
-            </Heading>
-            <Flex direction="column" justify="center" align="center">
-                <Text color="gray.700" fontSize="3xl">
-                    Create a game
-                </Text>
-                <form onSubmit={handleSubmit}>
-                    <FormControl isInvalid={Object.keys(formErrors).length > 0}>
-                        <Flex direction="column" justify="center" align="center">
-                            <FormLabel htmlFor="username">Username</FormLabel>
-                            <Input
-                                value={formData.username}
-                                onChange={handleOnChange}
-                                type="text"
-                                id="username"
-                                name="username"
-                                placeholder="Enter your username"
-                            />
-                            <FormErrorMessage>{formErrors.username}</FormErrorMessage>
-                            <Button type="submit" variantColor="teal" size="lg" margin="auto">
-                                Play!
-                            </Button>
-                        </Flex>
-                    </FormControl>
-                </form>
-            </Flex>
-        </Flex>
+        <Rows>
+            <h1>Oeaki</h1>
+            <h2>The drawing Game</h2>
+            <Columns>
+                <Card>
+                    <form onSubmit={handleSubmit}>
+                        <FormControl isInvalid={Object.keys(formErrors).length > 0}>
+                            <Rows>
+                                <h3>Create a game</h3>
+                                <FormLabel htmlFor="username">Username</FormLabel>
+                                <Input
+                                    value={formData.username}
+                                    onChange={handleOnChange}
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    placeholder="Enter your username"
+                                />
+                                <FormErrorMessage>{formErrors.username}</FormErrorMessage>
+                                <Button type="submit">Play!</Button>
+                            </Rows>
+                        </FormControl>
+                    </form>
+                </Card>
+            </Columns>
+        </Rows>
     );
 };
 
