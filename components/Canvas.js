@@ -151,7 +151,7 @@ const Canvas = ({ canvasRef, isFillMode, color, size, webRtc }) => {
     useMouseUpLeave(canvasRef, () => setIsPainting(false));
 
     // Replicating the drawing from peers
-    useEffect(() => {
+    React.useEffect(() => {
         if (webRtc) {
             webRtc.listen('drawing', (sender, info) => {
                 const { color, size, fromX, fromY, toX, toY } = JSON.parse(info);
