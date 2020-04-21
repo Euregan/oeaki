@@ -4,7 +4,7 @@ import { Rows } from './UI';
 import Canvas from './Canvas';
 import Actions from './Actions';
 
-const Board = () => {
+const Board = ({ webRtc }) => {
     const canvasRef = React.useRef(null);
     const [isFillMode, setIsFillMode] = React.useState(false);
     const [color, setColor] = React.useState('#B80000');
@@ -21,7 +21,7 @@ const Board = () => {
 
     return (
         <Rows className="board">
-            <Canvas canvasRef={canvasRef} isFillMode={isFillMode} color={color} size={size} />
+            <Canvas canvasRef={canvasRef} isFillMode={isFillMode} color={color} size={size} webRtc={webRtc} />
             <Actions
                 onClear={handleClear}
                 onFill={handleFill}

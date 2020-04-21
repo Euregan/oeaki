@@ -139,7 +139,7 @@ const useMouseUpLeave = (canvasRef, callBack) => {
     }, [callBack, canvasRef]);
 };
 
-const Canvas = ({ canvasRef, isFillMode, color, size }) => {
+const Canvas = ({ canvasRef, isFillMode, color, size, webRtc }) => {
     const [isPainting, setIsPainting] = React.useState(false);
     const [mousePosition, setMousePosition] = React.useState(null);
 
@@ -149,6 +149,27 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
     const mouseMovePosition = useMouseMovePosition(canvasRef);
     // Stop drawing on mouse release
     useMouseUpLeave(canvasRef, () => setIsPainting(false));
+
+    // Replicating the drawing from peers
+    useEffect(() => {
+        if (webRtc) {
+            webRtc.listen('drawing', (sender, info) => {
+                const { color, size, fromX, fromY, toX, toY } = JSON.parse(info);
+
+                const context = canvasRef.current.getContext('2d');
+                context.strokeStyle = color;
+                context.lineJoin = 'round';
+                context.lineWidth = size * 10;
+
+                context.beginPath();
+                context.moveTo(fromX, fromY);
+                context.lineTo(toX, toY);
+                context.closePath();
+
+                context.stroke();
+            });
+        }
+    }, [webRtc]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Start drawing when the mouse is pressed.
     React.useEffect(() => {
@@ -169,6 +190,7 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
         setIsPainting(true);
     }, [canvasRef, mouseDownPosition]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Making sure the canvas is not cleared on resizing
     React.useEffect(() => {
         // grab the new width & heights for easier access
         const newWidth = canvasRef.current.clientWidth;
@@ -210,6 +232,18 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
             context.closePath();
 
             context.stroke();
+
+            webRtc.send(
+                'drawing',
+                JSON.stringify({
+                    color,
+                    size,
+                    fromX: mousePosition.x,
+                    fromY: mousePosition.y,
+                    toX: mouseMovePosition.x,
+                    toY: mouseMovePosition.y,
+                })
+            );
         };
 
         drawLine();
