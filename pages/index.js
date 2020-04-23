@@ -2,7 +2,9 @@ import React from 'react';
 import { v4 as uuid } from 'uuid';
 import { useRouter } from 'next/router';
 import { FormErrorMessage, FormControl, FormLabel } from '@chakra-ui/core';
+
 import { Rows, Columns, Card, Input, Button } from '../components/UI';
+import useLocalStorage from '../lib/useLocalStorage';
 
 const Home = () => {
     const router = useRouter();
@@ -11,6 +13,8 @@ const Home = () => {
     });
     const [formErrors, setFormErrors] = React.useState({});
 
+    const [_, setUserName] = useLocalStorage('username', 'Anonymous');
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const { username } = formData;
@@ -18,11 +22,10 @@ const Home = () => {
             setFormErrors({ username: 'You have to enter an username to play' });
             return;
         }
-        localStorage.setItem('username', username);
-        const lobbyId = uuid();
 
+        setUserName(username);
         router.push({
-            pathname: `/lobby/${lobbyId}`,
+            pathname: `/lobby/${uuid()}`,
         });
     };
 
