@@ -8,12 +8,11 @@ import useLocalStorage from '../lib/useLocalStorage';
 
 const Home = () => {
     const router = useRouter();
+    const [username, setUserName] = useLocalStorage('username', '');
     const [formData, setFormData] = React.useState({
-        username: '',
+        username,
     });
     const [formErrors, setFormErrors] = React.useState({});
-
-    const [_, setUserName] = useLocalStorage('username', 'Anonymous');
 
     const handleSubmit = (e) => {
         e.preventDefault();
