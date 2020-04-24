@@ -1,6 +1,8 @@
 import React from 'react';
+import useLocalStorage from '../lib/useLocalStorage';
 
-export default (pool, username = 'anonymous') => {
+export default (pool) => {
+    const [username] = useLocalStorage('username', 'Anonymous');
     const [players, setPlayers] = React.useState({
         me: username,
     });
