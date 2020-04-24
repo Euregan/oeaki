@@ -24,7 +24,7 @@ module.exports = {
             'error',
             {
                 ignoreRestSiblings: true,
-                varsIgnorePattern: '^_',
+                varsIgnorePattern: '^_$',
             },
         ],
         'prettier/prettier': 'error',
