@@ -17,7 +17,6 @@ let rooms = {};
 new WebSocket.Server({ server }).on('connection', (ws, request) => {
     const id = v4();
     const room = request.url;
-    console.log(room);
     // Adding the client to the room
     if (!rooms[room]) {
         rooms[room] = {};
