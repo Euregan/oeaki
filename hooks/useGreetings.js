@@ -1,22 +1,24 @@
 import React from 'react';
 import useLocalStorage from '../lib/useLocalStorage';
 
-export default (pool) => {
+export default (pool, dispatch) => {
     const [username] = useLocalStorage('username', 'Anonymous');
-    const me = { username, points: 0 };
-
-    const [players, setPlayers] = React.useState({ me });
     const [playersQueue, setPlayersQueue] = React.useState([]);
-    const addPlayer = (player) => setPlayers({ ...players, ...player });
     const onNewPlayer = (id) => setPlayersQueue([...playersQueue, id]);
+    const onPlayerDisconnected = (id) => dispatch({ type: 'remove_player', id });
+
+    React.useEffect(() => {
+        dispatch({ type: 'new_player', id: 'me', username });
+    }, [username, dispatch]);
 
     React.useEffect(() => {
         if (pool) {
-            pool.listen('greetings', (id, myFriend) => {
-                addPlayer({ [id]: JSON.parse(myFriend) });
+            pool.listen('greetings', (id, newPlayer) => {
+                dispatch({ type: 'new_player', id, username: JSON.parse(newPlayer) });
             });
         }
-    }, [pool]);
+    }, [pool, dispatch]);
+
     React.useEffect(() => {
         if (pool && playersQueue.length) {
             playersQueue.forEach((id) => {
@@ -24,7 +26,7 @@ export default (pool) => {
             });
             setPlayersQueue([]);
         }
-    }, [pool, playersQueue]);
+    }, [pool, playersQueue, setPlayersQueue, username]);
 
-    return [players, onNewPlayer];
+    return [onNewPlayer, onPlayerDisconnected];
 };

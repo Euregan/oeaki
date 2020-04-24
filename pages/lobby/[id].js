@@ -3,18 +3,18 @@ import { Columns, Rows } from '../../components/UI';
 import Lobby from '../../components/Lobby';
 import Chat from '../../components/Chat';
 import Board from '../../components/Board';
-import useQueuedMessage from '../../hooks/useQueuedMessage';
 import useWebRTC from '../../hooks/useWebRTC';
+import { reducer, initialState } from '../../lib/gameReducer';
+import { useRouter } from 'next/router';
 
 const Game = () => {
-    const [messages, setMessages] = React.useState([]);
-    const newMessage = (message) => setMessages([message, ...messages]);
-    const addQueuedMessage = useQueuedMessage(newMessage);
-    const { pool, players } = useWebRTC([{ channel: 'chat', listener: addQueuedMessage }]);
-
+    const router = useRouter();
+    const { id: lobbyId } = router.query;
+    const [{ messages, players }, dispatch] = React.useReducer(reducer, initialState);
+    const { pool } = useWebRTC(lobbyId, dispatch);
     const sendMessage = (message) => {
         pool.send('chat', message);
-        newMessage({ emiterId: 'me', message });
+        dispatch({ type: 'new_message', emiterId: 'me', message });
     };
 
     return (

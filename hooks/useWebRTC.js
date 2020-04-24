@@ -4,23 +4,23 @@ import Pool from '../lib/webrtc/Pool';
 
 const channels = ['chat', 'drawing', 'game', 'greetings'];
 
-export default (listeners = {}) => {
+export default (dispatch) => {
     const [pool, setPool] = React.useState(null);
-    const [players, onNewPlayer] = useGreetings(pool);
+    const [onNewPlayer, onPlayerDisconnected] = useGreetings(pool, dispatch);
 
     React.useEffect(() => {
         if (typeof window !== 'undefined') {
-            const pool = new Pool(process.env.WEBSOCKET_URL, channels, onNewPlayer);
+            const pool = new Pool(process.env.WEBSOCKET_URL, channels, onNewPlayer, onPlayerDisconnected);
             window.pool = pool;
             setPool(pool);
         }
-    }, []);
+    }, [setPool]);
 
     React.useEffect(() => {
         if (pool) {
-            listeners.forEach(({ channel, listener }) => pool.listen(channel, listener));
+            pool.listen('chat', (emiterId, message) => dispatch({ type: 'new_message', emiterId, message }));
         }
-    }, [pool]);
+    }, [pool, dispatch]);
 
-    return { pool, players };
+    return { pool };
 };
