@@ -10,20 +10,28 @@ const Chat = ({ onSubmit, messages, players }) => {
         onSubmit(message);
         setMessage('');
     };
+
     return (
         <Card className="chat">
             <Rows>
                 <Flex direction="column-reverse" width="100%" className="messages">
-                    {messages.map(({ emiterId, message }, index) => (
-                        <Box key={index} rounded="lg" backgroundColor="tomato">
-                            <Flex align="center">
-                                <Avatar name={players[emiterId]}></Avatar>
-                                <Text marginLeft="2" color="white">
-                                    {message}
-                                </Text>
-                            </Flex>
-                        </Box>
-                    ))}
+                    {messages.map(({ emiterId, message }, index) => {
+                        const player = players[emiterId];
+                        if (!player) {
+                            return null;
+                        }
+
+                        return (
+                            <Box key={index} rounded="lg" backgroundColor="tomato">
+                                <Flex align="center">
+                                    <Avatar name={player.username} />
+                                    <Text marginLeft="2" color="white">
+                                        {message}
+                                    </Text>
+                                </Flex>
+                            </Box>
+                        );
+                    })}
                 </Flex>
                 <form onSubmit={handleSubmit}>
                     <Columns>
