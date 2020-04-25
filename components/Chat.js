@@ -1,13 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Text, Box, Flex, Avatar } from '@chakra-ui/core';
 import { Card, Rows, Columns, Button, Input } from './UI';
+import { useGame } from '../lib/useGame';
 
-const Chat = ({ onSubmit, messages, players }) => {
+const Chat = () => {
+    const { players, messages, sendMessage } = useGame();
     const [message, setMessage] = React.useState('');
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(message);
+
+        sendMessage('me', message);
         setMessage('');
     };
 
@@ -56,12 +59,6 @@ const Chat = ({ onSubmit, messages, players }) => {
             `}</style>
         </Card>
     );
-};
-
-Chat.propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    messages: PropTypes.array.isRequired,
-    players: PropTypes.object.isRequired,
 };
 
 export default Chat;

@@ -3,24 +3,15 @@ import { Columns, Rows } from '../../components/UI';
 import Lobby from '../../components/Lobby';
 import Chat from '../../components/Chat';
 import Board from '../../components/Board';
-import useWebRTC from '../../lib/webrtc/useWebRTC';
-import { useGame } from '../../lib/useGame';
+import { GameProvider } from '../../lib/useGame';
 
-const Game = () => {
-    const { messages, players, newPlayer, newMessage, removePlayer } = useGame();
-    const { pool } = useWebRTC(newPlayer, newMessage, removePlayer);
-
-    const sendMessage = (message) => {
-        pool.send('chat', message);
-        newMessage('me', message);
-    };
-
-    return (
+const Game = () => (
+    <GameProvider>
         <Columns className="game">
             <Board />
             <Rows className="players">
-                <Lobby players={players} />
-                <Chat onSubmit={sendMessage} messages={messages} players={players} />
+                <Lobby />
+                <Chat />
             </Rows>
             <style jsx global>{`
                 .game {
@@ -36,7 +27,7 @@ const Game = () => {
                 }
             `}</style>
         </Columns>
-    );
-};
+    </GameProvider>
+);
 
 export default Game;
