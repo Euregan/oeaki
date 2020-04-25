@@ -1,7 +1,9 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Input as ChakraInput } from '@chakra-ui/core';
 
 export const Rows = ({ children, className }) => (
-    <div className={'rows ' + (className || '')}>
+    <div className={`rows ${className}`}>
         {children}
         <style jsx global>{`
             .rows {
@@ -22,8 +24,17 @@ export const Rows = ({ children, className }) => (
     </div>
 );
 
+Rows.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string.isRequired,
+};
+
+Rows.defaultProps = {
+    className: '',
+};
+
 export const Columns = ({ children, className }) => (
-    <div className={'columns ' + (className || '')}>
+    <div className={`columns ${className}`}>
         {children}
         <style jsx global>{`
             .columns {
@@ -40,8 +51,17 @@ export const Columns = ({ children, className }) => (
     </div>
 );
 
+Columns.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string.isRequired,
+};
+
+Columns.defaultProps = {
+    className: '',
+};
+
 export const Card = ({ children, className }) => (
-    <div className={'card ' + (className || '')}>
+    <div className={`card ${className}`}>
         {children}
         <style jsx>{`
             .card {
@@ -53,17 +73,21 @@ export const Card = ({ children, className }) => (
     </div>
 );
 
-export const Input = ({ value, onChange, type, id, name, placeholder }) => (
+Card.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string.isRequired,
+};
+
+Card.defaultProps = {
+    className: '',
+};
+
+export const Input = (props) => (
     <ChakraInput
         borderColor="var(--border-color)"
         borderRadius="var(--active-border-radius)"
         boxSizing="border-box"
-        value={value}
-        onChange={onChange}
-        type={type}
-        id={id}
-        name={name}
-        placeholder={placeholder}
+        {...props}
     />
 );
 
@@ -83,3 +107,7 @@ export const Button = ({ children, ...props }) => (
         `}</style>
     </button>
 );
+
+Button.propTypes = {
+    children: PropTypes.node.isRequired,
+};

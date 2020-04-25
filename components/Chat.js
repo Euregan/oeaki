@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, Box, Flex, Avatar, Divider } from '@chakra-ui/core';
+import { Text, Box, Flex, Avatar } from '@chakra-ui/core';
 import { Card, Rows, Columns, Button, Input } from './UI';
 
 const Chat = ({ onSubmit, messages, players }) => {

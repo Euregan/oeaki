@@ -186,7 +186,7 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
         canvasRef.current.width = newWidth;
         canvasRef.current.height = newHeight;
         canvasRef.current.getContext('2d').drawImage(backupCanvas, 0, 0);
-    }, [width, height]);
+    }, [canvasRef, width, height]);
 
     // Draw the line on mouse move
     React.useEffect(() => {
