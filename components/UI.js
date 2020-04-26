@@ -39,7 +39,7 @@ export const Columns = ({ children, className }) => (
         <style jsx global>{`
             .columns {
                 display: flex;
-                flex-direction: rows;
+                flex-direction: row;
                 justify-content: center;
                 align-items: stretch;
             }
