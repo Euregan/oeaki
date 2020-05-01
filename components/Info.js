@@ -31,12 +31,12 @@ Word.propTypes = {
 };
 
 const Info = () => {
-    const { countdown, discoverWord, sendCountdown } = useGame();
+    const { countdown, discoverWord, setCountdown } = useGame();
 
     return (
         <React.Fragment>
             <div className="left">
-                <Countdown countdown={countdown} onCountdownChange={sendCountdown} />
+                <Countdown countdown={countdown} onCountdownChange={setCountdown} />
                 <div className="round">Round 0 of 3</div>
             </div>
             <div className="middle">
