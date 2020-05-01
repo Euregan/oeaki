@@ -139,7 +139,7 @@ const useMouseUpLeave = (canvasRef, callBack) => {
     }, [callBack, canvasRef]);
 };
 
-const Canvas = ({ canvasRef, isFillMode, color, size }) => {
+const Canvas = ({ canvasRef, isFillMode, color, size, onNewDrawLine }) => {
     const [isPainting, setIsPainting] = React.useState(false);
     const [mousePosition, setMousePosition] = React.useState(null);
 
@@ -169,6 +169,7 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
         setIsPainting(true);
     }, [canvasRef, mouseDownPosition]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Making sure the canvas is not cleared on resizing
     React.useEffect(() => {
         // grab the new width & heights for easier access
         const newWidth = canvasRef.current.clientWidth;
@@ -210,6 +211,8 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
             context.closePath();
 
             context.stroke();
+
+            onNewDrawLine(color, size, mousePosition, mouseMovePosition);
         };
 
         drawLine();
@@ -234,6 +237,7 @@ Canvas.propTypes = {
     isFillMode: PropTypes.bool,
     color: PropTypes.string,
     size: PropTypes.number,
+    onNewDrawLine: PropTypes.func,
 };
 
 export default Canvas;
