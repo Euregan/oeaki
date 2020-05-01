@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes, { func } from 'prop-types';
+import PropTypes from 'prop-types';
 import useWindowSize from '../lib/useWindowSize';
 import { Card } from './UI';
 
