@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import useWindowSize from '../lib/useWindowSize';
 import { Card } from './UI';
 
@@ -139,7 +139,7 @@ const useMouseUpLeave = (canvasRef, callBack) => {
     }, [callBack, canvasRef]);
 };
 
-const Canvas = ({ canvasRef, isFillMode, color, size, webRtc }) => {
+const Canvas = ({ canvasRef, isFillMode, color, size, onNewDrawLine }) => {
     const [isPainting, setIsPainting] = React.useState(false);
     const [mousePosition, setMousePosition] = React.useState(null);
 
@@ -149,27 +149,6 @@ const Canvas = ({ canvasRef, isFillMode, color, size, webRtc }) => {
     const mouseMovePosition = useMouseMovePosition(canvasRef);
     // Stop drawing on mouse release
     useMouseUpLeave(canvasRef, () => setIsPainting(false));
-
-    // Replicating the drawing from peers
-    React.useEffect(() => {
-        if (webRtc) {
-            webRtc.listen('drawing', (sender, info) => {
-                const { color, size, fromX, fromY, toX, toY } = JSON.parse(info);
-
-                const context = canvasRef.current.getContext('2d');
-                context.strokeStyle = color;
-                context.lineJoin = 'round';
-                context.lineWidth = size * 10;
-
-                context.beginPath();
-                context.moveTo(fromX, fromY);
-                context.lineTo(toX, toY);
-                context.closePath();
-
-                context.stroke();
-            });
-        }
-    }, [webRtc]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Start drawing when the mouse is pressed.
     React.useEffect(() => {
@@ -233,17 +212,7 @@ const Canvas = ({ canvasRef, isFillMode, color, size, webRtc }) => {
 
             context.stroke();
 
-            webRtc.send(
-                'drawing',
-                JSON.stringify({
-                    color,
-                    size,
-                    fromX: mousePosition.x,
-                    fromY: mousePosition.y,
-                    toX: mouseMovePosition.x,
-                    toY: mouseMovePosition.y,
-                })
-            );
+            onNewDrawLine(color, size, mousePosition, mouseMovePosition);
         };
 
         drawLine();
@@ -268,6 +237,7 @@ Canvas.propTypes = {
     isFillMode: PropTypes.bool,
     color: PropTypes.string,
     size: PropTypes.number,
+    onNewDrawLine: PropTypes.func,
 };
 
 export default Canvas;

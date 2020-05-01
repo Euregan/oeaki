@@ -8,7 +8,7 @@ import { GameProvider } from '../../lib/useGame';
 const Game = () => (
     <GameProvider>
         <Columns className="game">
-            <Board webRtc={pool} />
+            <Board />
             <Rows className="players">
                 <Lobby />
                 <Chat />
