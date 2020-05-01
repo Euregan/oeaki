@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from '@emotion/styled';
-import useWindowSize from '../hooks/useWindowSize';
+import useWindowSize from '../lib/useWindowSize';
 import { Card } from './UI';
 
 const getColorAtPixel = ({ width, data }, x, y) => ({
@@ -187,7 +186,7 @@ const Canvas = ({ canvasRef, isFillMode, color, size }) => {
         canvasRef.current.width = newWidth;
         canvasRef.current.height = newHeight;
         canvasRef.current.getContext('2d').drawImage(backupCanvas, 0, 0);
-    }, [width, height]);
+    }, [canvasRef, width, height]);
 
     // Draw the line on mouse move
     React.useEffect(() => {

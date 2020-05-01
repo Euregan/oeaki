@@ -3,18 +3,16 @@ import { Columns, Rows } from '../../components/UI';
 import Lobby from '../../components/Lobby';
 import Chat from '../../components/Chat';
 import Board from '../../components/Board';
-import useQueuedMessage from '../../hooks/useQueuedMessage';
-import useWebRTC from '../../hooks/useWebRTC';
+import useWebRTC from '../../lib/webrtc/useWebRTC';
+import { useGame } from '../../lib/useGame';
 
 const Game = () => {
-    const [messages, setMessages] = React.useState([]);
-    const newMessage = (message) => setMessages([message, ...messages]);
-    const addQueuedMessage = useQueuedMessage(newMessage);
-    const { pool, players } = useWebRTC([{ channel: 'chat', listener: addQueuedMessage }]);
+    const { messages, players, newPlayer, newMessage, removePlayer } = useGame();
+    const { pool } = useWebRTC(newPlayer, newMessage, removePlayer);
 
     const sendMessage = (message) => {
         pool.send('chat', message);
-        newMessage({ emiterId: 'me', message });
+        newMessage('me', message);
     };
 
     return (

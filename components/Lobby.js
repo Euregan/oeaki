@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Text, Flex, Heading, Avatar, List, ListItem } from '@chakra-ui/core';
+import { Box, Text, Flex, Avatar, List, ListItem } from '@chakra-ui/core';
 import { Card, Rows, Button } from './UI';
 import useShareLink from '../lib/useShareLink';
 
