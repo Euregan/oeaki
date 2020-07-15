@@ -14,7 +14,7 @@ const ShareButton = () => {
     return <Button onClick={onShareLink}>Invite Friends</Button>;
 };
 
-const Lobby = () => {
+const LobbyPlayers = () => {
     const { players } = useGame();
 
     return (
@@ -49,4 +49,4 @@ const Lobby = () => {
     );
 };
 
-export default Lobby;
+export default LobbyPlayers;

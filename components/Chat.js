@@ -18,8 +18,8 @@ const Chat = () => {
         <Card className="chat">
             <Rows>
                 <Flex direction="column-reverse" width="100%" className="messages">
-                    {messages.map(({ emiterId, message }, index) => {
-                        const player = players[emiterId];
+                    {messages.map(({ id, message }, index) => {
+                        const player = players[id];
                         if (!player) {
                             return null;
                         }
