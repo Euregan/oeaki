@@ -10,7 +10,7 @@
         "format": "prettier --write --check \"**/*.+(js|json|md)\""
     },
     "dependencies": {
-        "next": "13.0.6",
+        "next": "13.5.4",
         "prop-types": "^15.7.2",
         "react": "16.13.1",
         "react-dom": "16.13.1",
